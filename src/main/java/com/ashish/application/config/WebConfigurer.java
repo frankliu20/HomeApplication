@@ -6,8 +6,8 @@ import io.github.jhipster.config.h2.H2ConfigurationHelper;
 import io.github.jhipster.web.filter.CachingHttpHeadersFilter;
 
 import com.codahale.metrics.MetricRegistry;
-import com.codahale.metrics.servlet.InstrumentedFilter;
-import com.codahale.metrics.servlets.MetricsServlet;
+import io.dropwizard.metrics.servlet.InstrumentedFilter;
+import io.dropwizard.metrics.servlets.MetricsServlet;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -20,6 +20,7 @@ import org.springframework.boot.web.servlet.server.ConfigurableServletWebServerF
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.core.env.Environment;
+import org.springframework.core.env.Profiles;
 import org.springframework.http.MediaType;
 import org.springframework.web.cors.CorsConfiguration;
 import org.springframework.web.cors.UrlBasedCorsConfigurationSource;
@@ -27,9 +28,9 @@ import org.springframework.web.filter.CorsFilter;
 import java.io.File;
 import java.io.UnsupportedEncodingException;
 import java.nio.charset.StandardCharsets;
-import java.nio.file.Paths;
+import java.nio.file.Path;
 import java.util.*;
-import javax.servlet.*;
+import jakarta.servlet.*;
 
 import static java.net.URLDecoder.decode;
 
@@ -60,10 +61,10 @@ public class WebConfigurer implements ServletContextInitializer, WebServerFactor
         }
         EnumSet<DispatcherType> disps = EnumSet.of(DispatcherType.REQUEST, DispatcherType.FORWARD, DispatcherType.ASYNC);
         initMetrics(servletContext, disps);
-        if (env.acceptsProfiles(JHipsterConstants.SPRING_PROFILE_PRODUCTION)) {
+        if (env.acceptsProfiles(Profiles.of(JHipsterConstants.SPRING_PROFILE_PRODUCTION))) {
             initCachingHttpHeadersFilter(servletContext, disps);
         }
-        if (env.acceptsProfiles(JHipsterConstants.SPRING_PROFILE_DEVELOPMENT)) {
+        if (env.acceptsProfiles(Profiles.of(JHipsterConstants.SPRING_PROFILE_DEVELOPMENT))) {
             initH2Console(servletContext);
         }
         log.info("Web application fully configured");
@@ -85,29 +86,27 @@ public class WebConfigurer implements ServletContextInitializer, WebServerFactor
          * for more information.
          */
         if (jHipsterProperties.getHttp().getVersion().equals(JHipsterProperties.Http.Version.V_2_0) &&
-            server instanceof UndertowServletWebServerFactory) {
+            server instanceof UndertowServletWebServerFactory factory) {
 
-            ((UndertowServletWebServerFactory) server)
+            factory
                 .addBuilderCustomizers(builder ->
                     builder.setServerOption(UndertowOptions.ENABLE_HTTP2, true));
         }
     }
 
     private void setMimeMappings(WebServerFactory server) {
-        if (server instanceof ConfigurableServletWebServerFactory) {
+        if (server instanceof ConfigurableServletWebServerFactory servletWebServer) {
             MimeMappings mappings = new MimeMappings(MimeMappings.DEFAULT);
             // IE issue, see https://github.com/jhipster/generator-jhipster/pull/711
             mappings.add("html", MediaType.TEXT_HTML_VALUE + ";charset=" + StandardCharsets.UTF_8.name().toLowerCase());
             // CloudFoundry issue, see https://github.com/cloudfoundry/gorouter/issues/64
             mappings.add("json", MediaType.TEXT_HTML_VALUE + ";charset=" + StandardCharsets.UTF_8.name().toLowerCase());
-            ConfigurableServletWebServerFactory servletWebServer = (ConfigurableServletWebServerFactory) server;
             servletWebServer.setMimeMappings(mappings);
         }
     }
 
     private void setLocationForStaticAssets(WebServerFactory server) {
-        if (server instanceof ConfigurableServletWebServerFactory) {
-            ConfigurableServletWebServerFactory servletWebServer = (ConfigurableServletWebServerFactory) server;
+        if (server instanceof ConfigurableServletWebServerFactory servletWebServer) {
             File root;
             String prefixPath = resolvePathPrefix();
             root = new File(prefixPath + "target/www/");
@@ -128,7 +127,7 @@ public class WebConfigurer implements ServletContextInitializer, WebServerFactor
             /* try without decoding if this ever happens */
             fullExecutablePath = this.getClass().getResource("").getPath();
         }
-        String rootPath = Paths.get(".").toUri().normalize().getPath();
+        String rootPath = Path.of(".").toUri().normalize().getPath();
         String extractedPath = fullExecutablePath.replace(rootPath, "");
         int extractionEndIndex = extractedPath.indexOf("target/");
         if (extractionEndIndex <= 0) {

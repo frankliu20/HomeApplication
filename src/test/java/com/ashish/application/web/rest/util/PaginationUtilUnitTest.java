@@ -1,14 +1,12 @@
 package com.ashish.application.web.rest.util;
 
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertNotNull;
-import static org.junit.Assert.assertTrue;
+import static org.junit.jupiter.api.Assertions.*;
 
 import java.util.ArrayList;
 import java.util.List;
-
-import org.junit.Test;
 import org.springframework.data.domain.Page;
+
+import org.junit.jupiter.api.Test;
 import org.springframework.data.domain.PageImpl;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.http.HttpHeaders;
@@ -29,7 +27,7 @@ public class PaginationUtilUnitTest {
         List<String> strHeaders = headers.get(HttpHeaders.LINK);
         assertNotNull(strHeaders);
         assertTrue(strHeaders.size() == 1);
-        String headerData = strHeaders.get(0);
+        String headerData = strHeaders.getFirst();
         assertTrue(headerData.split(",").length == 4);
         String expectedData = "</api/_search/example?page=7&size=50>; rel=\"next\","
                 + "</api/_search/example?page=5&size=50>; rel=\"prev\","
@@ -38,7 +36,7 @@ public class PaginationUtilUnitTest {
         assertEquals(expectedData, headerData);
         List<String> xTotalCountHeaders = headers.get("X-Total-Count");
         assertTrue(xTotalCountHeaders.size() == 1);
-        assertTrue(Long.valueOf(xTotalCountHeaders.get(0)).equals(400L));
+        assertTrue(Long.valueOf(xTotalCountHeaders.getFirst()).equals(400L));
     }
 
 }

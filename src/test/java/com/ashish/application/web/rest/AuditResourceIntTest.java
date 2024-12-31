@@ -5,9 +5,8 @@ import com.ashish.application.config.audit.AuditEventConverter;
 import com.ashish.application.domain.PersistentAuditEvent;
 import com.ashish.application.repository.PersistenceAuditEventRepository;
 import com.ashish.application.service.AuditEventService;
-import org.junit.Before;
-import org.junit.Test;
-import org.junit.runner.RunWith;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
 import org.mockito.MockitoAnnotations;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
@@ -15,7 +14,6 @@ import org.springframework.data.web.PageableHandlerMethodArgumentResolver;
 import org.springframework.format.support.FormattingConversionService;
 import org.springframework.http.MediaType;
 import org.springframework.http.converter.json.MappingJackson2HttpMessageConverter;
-import org.springframework.test.context.junit4.SpringRunner;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.setup.MockMvcBuilders;
 import org.springframework.transaction.annotation.Transactional;
@@ -31,7 +29,6 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
  *
  * @see AuditResource
  */
-@RunWith(SpringRunner.class)
 @SpringBootTest(classes = HomeApplicationApp.class)
 @Transactional
 public class AuditResourceIntTest {
@@ -60,7 +57,7 @@ public class AuditResourceIntTest {
 
     private MockMvc restAuditMockMvc;
 
-    @Before
+    @BeforeEach
     public void setup() {
         MockitoAnnotations.initMocks(this);
         AuditEventService auditEventService =
@@ -72,7 +69,7 @@ public class AuditResourceIntTest {
             .setMessageConverters(jacksonMessageConverter).build();
     }
 
-    @Before
+    @BeforeEach
     public void initTest() {
         auditEventRepository.deleteAll();
         auditEvent = new PersistentAuditEvent();
@@ -89,7 +86,7 @@ public class AuditResourceIntTest {
         // Get all the audits
         restAuditMockMvc.perform(get("/management/audits"))
             .andExpect(status().isOk())
-            .andExpect(content().contentType(MediaType.APPLICATION_JSON_UTF8_VALUE))
+            .andExpect(content().contentType(MediaType.APPLICATION_JSON_VALUE))
             .andExpect(jsonPath("$.[*].principal").value(hasItem(SAMPLE_PRINCIPAL)));
     }
 
@@ -101,7 +98,7 @@ public class AuditResourceIntTest {
         // Get the audit
         restAuditMockMvc.perform(get("/management/audits/{id}", auditEvent.getId()))
             .andExpect(status().isOk())
-            .andExpect(content().contentType(MediaType.APPLICATION_JSON_UTF8_VALUE))
+            .andExpect(content().contentType(MediaType.APPLICATION_JSON_VALUE))
             .andExpect(jsonPath("$.principal").value(SAMPLE_PRINCIPAL));
     }
 
@@ -117,7 +114,7 @@ public class AuditResourceIntTest {
         // Get the audit
         restAuditMockMvc.perform(get("/management/audits?fromDate="+fromDate+"&toDate="+toDate))
             .andExpect(status().isOk())
-            .andExpect(content().contentType(MediaType.APPLICATION_JSON_UTF8_VALUE))
+            .andExpect(content().contentType(MediaType.APPLICATION_JSON_VALUE))
             .andExpect(jsonPath("$.[*].principal").value(hasItem(SAMPLE_PRINCIPAL)));
     }
 
@@ -133,7 +130,7 @@ public class AuditResourceIntTest {
         // Query audits but expect no results
         restAuditMockMvc.perform(get("/management/audits?fromDate=" + fromDate + "&toDate=" + toDate))
             .andExpect(status().isOk())
-            .andExpect(content().contentType(MediaType.APPLICATION_JSON_UTF8_VALUE))
+            .andExpect(content().contentType(MediaType.APPLICATION_JSON_VALUE))
             .andExpect(header().string("X-Total-Count", "0"));
     }
 

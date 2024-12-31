@@ -18,8 +18,8 @@ import org.slf4j.LoggerFactory;
 import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.*;
 
-import javax.servlet.http.HttpServletRequest;
-import javax.validation.Valid;
+import jakarta.servlet.http.HttpServletRequest;
+import jakarta.validation.Valid;
 import com.ashish.application.service.dto.PasswordChangeDTO;
 import java.util.*;
 
@@ -74,9 +74,9 @@ public class AccountResource {
      */
     @GetMapping("/activate")
     @Timed
-    public void activateAccount(@RequestParam(value = "key") String key) {
+    public void activateAccount(@RequestParam String key) {
         Optional<User> user = userService.activateRegistration(key);
-        if (!user.isPresent()) {
+        if (user.isEmpty()) {
             throw new InternalServerErrorException("No user was found for this activation key");
         }
     }
@@ -124,7 +124,7 @@ public class AccountResource {
             throw new EmailAlreadyUsedException();
         }
         Optional<User> user = userRepository.findOneByLogin(userLogin);
-        if (!user.isPresent()) {
+        if (user.isEmpty()) {
             throw new InternalServerErrorException("User could not be found");
         }
         userService.updateUser(userDTO.getFirstName(), userDTO.getLastName(), userDTO.getEmail(),
@@ -177,7 +177,7 @@ public class AccountResource {
         Optional<User> user =
             userService.completePasswordReset(keyAndPassword.getNewPassword(), keyAndPassword.getKey());
 
-        if (!user.isPresent()) {
+        if (user.isEmpty()) {
             throw new InternalServerErrorException("No user was found for this reset key");
         }
     }

@@ -9,21 +9,19 @@ import com.ashish.application.service.dto.ProductDTO;
 import com.ashish.application.service.mapper.ProductMapper;
 import com.ashish.application.web.rest.errors.ExceptionTranslator;
 
-import org.junit.Before;
-import org.junit.Test;
-import org.junit.runner.RunWith;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
 import org.mockito.MockitoAnnotations;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.data.web.PageableHandlerMethodArgumentResolver;
 import org.springframework.http.MediaType;
 import org.springframework.http.converter.json.MappingJackson2HttpMessageConverter;
-import org.springframework.test.context.junit4.SpringRunner;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.setup.MockMvcBuilders;
 import org.springframework.transaction.annotation.Transactional;
 
-import javax.persistence.EntityManager;
+import jakarta.persistence.EntityManager;
 import java.util.List;
 
 
@@ -38,7 +36,6 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
  *
  * @see ProductResource
  */
-@RunWith(SpringRunner.class)
 @SpringBootTest(classes = HomeApplicationApp.class)
 public class ProductResourceIntTest {
 
@@ -78,7 +75,7 @@ public class ProductResourceIntTest {
 
     private Product product;
 
-    @Before
+    @BeforeEach
     public void setup() {
         MockitoAnnotations.initMocks(this);
         final ProductResource productResource = new ProductResource(productService);
@@ -103,7 +100,7 @@ public class ProductResourceIntTest {
         return product;
     }
 
-    @Before
+    @BeforeEach
     public void initTest() {
         product = createEntity(em);
     }
@@ -123,7 +120,7 @@ public class ProductResourceIntTest {
         // Validate the Product in the database
         List<Product> productList = productRepository.findAll();
         assertThat(productList).hasSize(databaseSizeBeforeCreate + 1);
-        Product testProduct = productList.get(productList.size() - 1);
+        Product testProduct = productList.getLast();
         assertThat(testProduct.getProductName()).isEqualTo(DEFAULT_PRODUCT_NAME);
         assertThat(testProduct.getProductType()).isEqualTo(DEFAULT_PRODUCT_TYPE);
         assertThat(testProduct.getPrice()).isEqualTo(DEFAULT_PRICE);
@@ -158,7 +155,7 @@ public class ProductResourceIntTest {
         // Get all the productList
         restProductMockMvc.perform(get("/api/products?sort=id,desc"))
             .andExpect(status().isOk())
-            .andExpect(content().contentType(MediaType.APPLICATION_JSON_UTF8_VALUE))
+            .andExpect(content().contentType(MediaType.APPLICATION_JSON_VALUE))
             .andExpect(jsonPath("$.[*].id").value(hasItem(product.getId().intValue())))
             .andExpect(jsonPath("$.[*].productName").value(hasItem(DEFAULT_PRODUCT_NAME.toString())))
             .andExpect(jsonPath("$.[*].productType").value(hasItem(DEFAULT_PRODUCT_TYPE.toString())))
@@ -175,7 +172,7 @@ public class ProductResourceIntTest {
         // Get the product
         restProductMockMvc.perform(get("/api/products/{id}", product.getId()))
             .andExpect(status().isOk())
-            .andExpect(content().contentType(MediaType.APPLICATION_JSON_UTF8_VALUE))
+            .andExpect(content().contentType(MediaType.APPLICATION_JSON_VALUE))
             .andExpect(jsonPath("$.id").value(product.getId().intValue()))
             .andExpect(jsonPath("$.productName").value(DEFAULT_PRODUCT_NAME.toString()))
             .andExpect(jsonPath("$.productType").value(DEFAULT_PRODUCT_TYPE.toString()))
@@ -215,7 +212,7 @@ public class ProductResourceIntTest {
         // Validate the Product in the database
         List<Product> productList = productRepository.findAll();
         assertThat(productList).hasSize(databaseSizeBeforeUpdate);
-        Product testProduct = productList.get(productList.size() - 1);
+        Product testProduct = productList.getLast();
         assertThat(testProduct.getProductName()).isEqualTo(UPDATED_PRODUCT_NAME);
         assertThat(testProduct.getProductType()).isEqualTo(UPDATED_PRODUCT_TYPE);
         assertThat(testProduct.getPrice()).isEqualTo(UPDATED_PRICE);

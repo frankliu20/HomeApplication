@@ -5,10 +5,10 @@ import com.ashish.application.config.Constants;
 import com.ashish.application.domain.Authority;
 import com.ashish.application.domain.User;
 
-import javax.validation.constraints.Email;
-import javax.validation.constraints.NotBlank;
+import jakarta.validation.constraints.Email;
+import jakarta.validation.constraints.NotBlank;
 
-import javax.validation.constraints.*;
+import jakarta.validation.constraints.*;
 import java.time.Instant;
 import java.util.Set;
 import java.util.stream.Collectors;

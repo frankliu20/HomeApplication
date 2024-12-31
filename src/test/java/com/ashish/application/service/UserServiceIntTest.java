@@ -8,9 +8,8 @@ import com.ashish.application.service.dto.UserDTO;
 import com.ashish.application.service.util.RandomUtil;
 
 import org.apache.commons.lang3.RandomStringUtils;
-import org.junit.Before;
-import org.junit.Test;
-import org.junit.runner.RunWith;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
 import org.mockito.Mock;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
@@ -18,7 +17,6 @@ import org.springframework.data.auditing.AuditingHandler;
 import org.springframework.data.auditing.DateTimeProvider;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
-import org.springframework.test.context.junit4.SpringRunner;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.time.Instant;
@@ -36,7 +34,6 @@ import static org.mockito.Mockito.when;
  *
  * @see UserService
  */
-@RunWith(SpringRunner.class)
 @SpringBootTest(classes = HomeApplicationApp.class)
 @Transactional
 public class UserServiceIntTest {
@@ -55,7 +52,7 @@ public class UserServiceIntTest {
 
     private User user;
 
-    @Before
+    @BeforeEach
     public void init() {
         user = new User();
         user.setLogin("johndoe");
@@ -163,7 +160,7 @@ public class UserServiceIntTest {
     @Transactional
     public void assertThatAnonymousUserIsNotGet() {
         user.setLogin(Constants.ANONYMOUS_USER);
-        if (!userRepository.findOneByLogin(Constants.ANONYMOUS_USER).isPresent()) {
+        if (userRepository.findOneByLogin(Constants.ANONYMOUS_USER).isEmpty()) {
             userRepository.saveAndFlush(user);
         }
         final PageRequest pageable = PageRequest.of(0, (int) userRepository.count());

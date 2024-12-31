@@ -1,7 +1,7 @@
 package com.ashish.application.web.rest.vm;
 
 import com.ashish.application.service.dto.UserDTO;
-import javax.validation.constraints.Size;
+import jakarta.validation.constraints.Size;
 
 /**
  * View Model extending the UserDTO, which is meant to be used in the user management UI.

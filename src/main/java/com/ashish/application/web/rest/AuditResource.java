@@ -52,8 +52,8 @@ public class AuditResource {
      */
     @GetMapping(params = {"fromDate", "toDate"})
     public ResponseEntity<List<AuditEvent>> getByDates(
-        @RequestParam(value = "fromDate") LocalDate fromDate,
-        @RequestParam(value = "toDate") LocalDate toDate,
+        @RequestParam LocalDate fromDate,
+        @RequestParam LocalDate toDate,
         Pageable pageable) {
 
         Page<AuditEvent> page = auditEventService.findByDates(

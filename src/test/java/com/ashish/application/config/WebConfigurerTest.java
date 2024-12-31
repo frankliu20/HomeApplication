@@ -1,8 +1,8 @@
 package com.ashish.application.config;
 
 import com.codahale.metrics.MetricRegistry;
-import com.codahale.metrics.servlet.InstrumentedFilter;
-import com.codahale.metrics.servlets.MetricsServlet;
+import io.dropwizard.metrics.servlet.InstrumentedFilter;
+import io.dropwizard.metrics.servlets.MetricsServlet;
 import io.github.jhipster.config.JHipsterConstants;
 import io.github.jhipster.config.JHipsterProperties;
 import io.github.jhipster.web.filter.CachingHttpHeadersFilter;
@@ -12,8 +12,9 @@ import io.undertow.UndertowOptions;
 import org.apache.commons.io.FilenameUtils;
 
 import org.h2.server.web.WebServlet;
-import org.junit.Before;
-import org.junit.Test;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
+
 import org.springframework.boot.web.embedded.undertow.UndertowServletWebServerFactory;
 import org.springframework.http.HttpHeaders;
 import org.springframework.mock.env.MockEnvironment;
@@ -23,7 +24,7 @@ import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.setup.MockMvcBuilders;
 import org.xnio.OptionMap;
 
-import javax.servlet.*;
+import jakarta.servlet.*;
 import java.util.*;
 
 import static org.assertj.core.api.Assertions.assertThat;
@@ -52,7 +53,7 @@ public class WebConfigurerTest {
 
     private MetricRegistry metricRegistry;
 
-    @Before
+    @BeforeEach
     public void setup() {
         servletContext = spy(new MockServletContext());
         doReturn(mock(FilterRegistration.Dynamic.class))

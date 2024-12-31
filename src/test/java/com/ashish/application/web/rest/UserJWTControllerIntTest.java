@@ -6,14 +6,12 @@ import com.ashish.application.repository.UserRepository;
 import com.ashish.application.security.jwt.TokenProvider;
 import com.ashish.application.web.rest.vm.LoginVM;
 import com.ashish.application.web.rest.errors.ExceptionTranslator;
-import org.junit.Before;
-import org.junit.Test;
-import org.junit.runner.RunWith;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.crypto.password.PasswordEncoder;
-import org.springframework.test.context.junit4.SpringRunner;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.setup.MockMvcBuilders;
 import org.springframework.transaction.annotation.Transactional;
@@ -31,7 +29,6 @@ import static org.hamcrest.Matchers.not;
  *
  * @see UserJWTController
  */
-@RunWith(SpringRunner.class)
 @SpringBootTest(classes = HomeApplicationApp.class)
 public class UserJWTControllerIntTest {
 
@@ -52,7 +49,7 @@ public class UserJWTControllerIntTest {
 
     private MockMvc mockMvc;
 
-    @Before
+    @BeforeEach
     public void setup() {
         UserJWTController userJWTController = new UserJWTController(tokenProvider, authenticationManager);
         this.mockMvc = MockMvcBuilders.standaloneSetup(userJWTController)
