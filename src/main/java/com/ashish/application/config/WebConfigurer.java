@@ -1,10 +1,7 @@
 package com.ashish.application.config;
 
-import io.github.jhipster.config.JHipsterConstants;
-import io.github.jhipster.config.JHipsterProperties;
-import io.github.jhipster.config.h2.H2ConfigurationHelper;
-import io.github.jhipster.web.filter.CachingHttpHeadersFilter;
-
+import tech.jhipster.config.JHipsterConstants;
+import tech.jhipster.config.JHipsterProperties;
 import com.codahale.metrics.MetricRegistry;
 import io.dropwizard.metrics.servlet.InstrumentedFilter;
 import io.dropwizard.metrics.servlets.MetricsServlet;
@@ -31,6 +28,8 @@ import java.nio.charset.StandardCharsets;
 import java.nio.file.Path;
 import java.util.*;
 import jakarta.servlet.*;
+import tech.jhipster.config.h2.H2ConfigurationHelper;
+import tech.jhipster.web.filter.CachingHttpHeadersFilter;
 
 import static java.net.URLDecoder.decode;
 
@@ -85,8 +84,7 @@ public class WebConfigurer implements ServletContextInitializer, WebServerFactor
          * See the JHipsterProperties class and your application-*.yml configuration files
          * for more information.
          */
-        if (jHipsterProperties.getHttp().getVersion().equals(JHipsterProperties.Http.Version.V_2_0) &&
-            server instanceof UndertowServletWebServerFactory factory) {
+        if (server instanceof UndertowServletWebServerFactory factory) {
 
             factory
                 .addBuilderCustomizers(builder ->

@@ -6,7 +6,7 @@ import com.ashish.application.web.rest.errors.BadRequestAlertException;
 import com.ashish.application.web.rest.util.HeaderUtil;
 import com.ashish.application.web.rest.util.PaginationUtil;
 import com.ashish.application.service.dto.ProductDTO;
-import io.github.jhipster.web.util.ResponseUtil;
+
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.data.domain.Page;
@@ -15,6 +15,7 @@ import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
+import tech.jhipster.web.util.ResponseUtil;
 
 import java.net.URI;
 import java.net.URISyntaxException;

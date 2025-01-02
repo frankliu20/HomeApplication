@@ -14,11 +14,12 @@ import org.zalando.problem.Problem;
 import org.zalando.problem.ProblemBuilder;
 import org.zalando.problem.Status;
 import org.zalando.problem.spring.web.advice.ProblemHandling;
-import org.zalando.problem.spring.web.advice.validation.ConstraintViolationProblem;
 
 import jakarta.annotation.Nonnull;
 import jakarta.annotation.Nullable;
 import jakarta.servlet.http.HttpServletRequest;
+import org.zalando.problem.violations.ConstraintViolationProblem;
+
 import java.util.List;
 import java.util.NoSuchElementException;
 import java.util.stream.Collectors;

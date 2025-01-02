@@ -1,12 +1,9 @@
 package com.ashish.application.config;
 
-import com.fasterxml.jackson.datatype.hibernate5.Hibernate5Module;
+import com.fasterxml.jackson.datatype.hibernate6.Hibernate6Module;
 import com.fasterxml.jackson.module.afterburner.AfterburnerModule;
-
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
-import org.zalando.problem.ProblemModule;
-import org.zalando.problem.validation.ConstraintViolationProblemModule;
 
 @Configuration
 public class JacksonConfiguration {
@@ -15,8 +12,8 @@ public class JacksonConfiguration {
      * Support for Hibernate types in Jackson.
      */
     @Bean
-    public Hibernate5Module hibernate5Module() {
-        return new Hibernate5Module();
+    public Hibernate6Module hibernate6Module() {
+        return new Hibernate6Module();
     }
 
     /*
@@ -26,21 +23,4 @@ public class JacksonConfiguration {
     public AfterburnerModule afterburnerModule() {
         return new AfterburnerModule();
     }
-
-    /*
-     * Module for serialization/deserialization of RFC7807 Problem.
-     */
-    @Bean
-    ProblemModule problemModule() {
-        return new ProblemModule();
-    }
-
-    /*
-     * Module for serialization/deserialization of ConstraintViolationProblem.
-     */
-    @Bean
-    ConstraintViolationProblemModule constraintViolationProblemModule() {
-        return new ConstraintViolationProblemModule();
-    }
-
 }

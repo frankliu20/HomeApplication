@@ -9,21 +9,22 @@ import org.springframework.context.annotation.Configuration;
 import org.springframework.context.annotation.Import;
 import org.springframework.http.HttpMethod;
 import org.springframework.security.authentication.AuthenticationManager;
+import org.springframework.security.config.Customizer;
 import org.springframework.security.config.annotation.authentication.builders.AuthenticationManagerBuilder;
+import org.springframework.security.config.annotation.authentication.configuration.AuthenticationConfiguration;
 import org.springframework.security.config.annotation.method.configuration.EnableMethodSecurity;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
-import org.springframework.security.config.annotation.web.builders.WebSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
-import org.springframework.security.config.annotation.web.configuration.WebSecurityConfigurerAdapter;
+import org.springframework.security.config.annotation.web.configurers.AbstractHttpConfigurer;
+import org.springframework.security.config.annotation.web.configurers.HeadersConfigurer;
 import org.springframework.security.config.http.SessionCreationPolicy;
 import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
+import org.springframework.security.web.SecurityFilterChain;
 import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
 import org.springframework.web.filter.CorsFilter;
 import org.zalando.problem.spring.web.advice.security.SecurityProblemSupport;
-
-import static org.springframework.security.config.Customizer.withDefaults;
 
 import jakarta.annotation.PostConstruct;
 
@@ -31,7 +32,7 @@ import jakarta.annotation.PostConstruct;
 @EnableWebSecurity
 @EnableMethodSecurity(securedEnabled = true)
 @Import(SecurityProblemSupport.class)
-public class SecurityConfiguration extends WebSecurityConfigurerAdapter {
+public class SecurityConfiguration {
 
     private final AuthenticationManagerBuilder authenticationManagerBuilder;
 
@@ -43,7 +44,7 @@ public class SecurityConfiguration extends WebSecurityConfigurerAdapter {
 
     private final SecurityProblemSupport problemSupport;
 
-    public SecurityConfiguration(AuthenticationManagerBuilder authenticationManagerBuilder, UserDetailsService userDetailsService,TokenProvider tokenProvider,CorsFilter corsFilter, SecurityProblemSupport problemSupport) {
+    public SecurityConfiguration(AuthenticationManagerBuilder authenticationManagerBuilder, UserDetailsService userDetailsService, TokenProvider tokenProvider, CorsFilter corsFilter, SecurityProblemSupport problemSupport) {
         this.authenticationManagerBuilder = authenticationManagerBuilder;
         this.userDetailsService = userDetailsService;
         this.tokenProvider = tokenProvider;
@@ -62,10 +63,9 @@ public class SecurityConfiguration extends WebSecurityConfigurerAdapter {
         }
     }
 
-    /*~~(Migrate manually based on https://spring.io/blog/2022/02/21/spring-security-without-the-websecurityconfigureradapter)~~>*/@Override
     @Bean
-    public AuthenticationManager authenticationManagerBean() throws Exception {
-        return super.authenticationManagerBean();
+    public AuthenticationManager authenticationManager(AuthenticationConfiguration authenticationConfiguration) throws Exception {
+        return authenticationConfiguration.getAuthenticationManager();
     }
 
     @Bean
@@ -73,46 +73,39 @@ public class SecurityConfiguration extends WebSecurityConfigurerAdapter {
         return new BCryptPasswordEncoder();
     }
 
-    @Override
-    public void configure(WebSecurity web) throws Exception {
-        web.ignoring()
-            .requestMatchers(HttpMethod.OPTIONS, "/**")
-            .requestMatchers("/app/**/*.{js,html}")
-            .requestMatchers("/i18n/**")
-            .requestMatchers("/content/**")
-            .requestMatchers("/swagger-ui/index.html")
-            .requestMatchers("/test/**")
-            .requestMatchers("/h2-console/**");
-    }
-
-    @Override
-    protected void configure(HttpSecurity http) throws Exception {
+    @Bean
+    public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
         http
             .addFilterBefore(corsFilter, UsernamePasswordAuthenticationFilter.class)
             .exceptionHandling(handling -> handling
-                .csrf(csrf -> csrf
-                    .headers(headers -> headers
-                        .frameOptions(withDefaults()))
-                    .sessionManagement(management -> management
-                        .sessionCreationPolicy(SessionCreationPolicy.STATELESS))
-                    .authorizeRequests(requests -> requests
-                        .requestMatchers("/api/register").permitAll()
-                        .requestMatchers("/api/activate").permitAll()
-                        .requestMatchers("/api/authenticate").permitAll()
-                        .requestMatchers("/api/account/reset-password/init").permitAll()
-                        .requestMatchers("/api/account/reset-password/finish").permitAll()
-                        .requestMatchers("/api/**").authenticated()
-                        .requestMatchers("/management/health").permitAll()
-                        .requestMatchers("/management/info").permitAll()
-                        .requestMatchers("/management/**").hasAuthority(AuthoritiesConstants.ADMIN)
-                        .requestMatchers("/v2/api-docs/**").permitAll()
-                        .requestMatchers("/swagger-resources/configuration/ui").permitAll()
-                        .requestMatchers("/swagger-ui/index.html").hasAuthority(AuthoritiesConstants.ADMIN))
-                    .with(securityConfigurerAdapter(), withDefaults())));
+                .authenticationEntryPoint(problemSupport)
+                .accessDeniedHandler(problemSupport))
+            .csrf(AbstractHttpConfigurer::disable)
+            .headers(headers -> headers.frameOptions(HeadersConfigurer.FrameOptionsConfig::disable))
+            .sessionManagement(session -> session.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
+            .authorizeHttpRequests(authorize -> authorize
+                .requestMatchers(HttpMethod.OPTIONS, "/**").permitAll()
+                .requestMatchers("/app/**/*.{js,html}").permitAll()
+                .requestMatchers("/i18n/**").permitAll()
+                .requestMatchers("/content/**").permitAll()
+                .requestMatchers("/swagger-ui/index.html").permitAll()
+                .requestMatchers("/test/**").permitAll()
+                .requestMatchers("/h2-console/**").permitAll()
+                .requestMatchers("/api/register").permitAll()
+                .requestMatchers("/api/activate").permitAll()
+                .requestMatchers("/api/authenticate").permitAll()
+                .requestMatchers("/api/account/reset-password/init").permitAll()
+                .requestMatchers("/api/account/reset-password/finish").permitAll()
+                .requestMatchers("/api/**").authenticated()
+                .requestMatchers("/management/health").permitAll()
+                .requestMatchers("/management/info").permitAll()
+                .requestMatchers("/management/**").hasAuthority(AuthoritiesConstants.ADMIN)
+                .requestMatchers("/v2/api-docs/**").permitAll()
+                .requestMatchers("/swagger-resources/configuration/ui").permitAll()
+                .requestMatchers("/swagger-ui/index.html").hasAuthority(AuthoritiesConstants.ADMIN))
+            .with(new JWTConfigurer(tokenProvider), Customizer.withDefaults());
 
+        return http.build();
     }
 
-    private JWTConfigurer securityConfigurerAdapter() {
-        return new JWTConfigurer(tokenProvider);
-    }
 }

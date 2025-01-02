@@ -1,6 +1,6 @@
 package com.ashish.application.security.jwt;
 
-import io.github.jhipster.config.JHipsterProperties;
+import tech.jhipster.config.JHipsterProperties;
 
 import java.nio.charset.StandardCharsets;
 import java.util.*;

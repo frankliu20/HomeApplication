@@ -3,7 +3,7 @@ package com.ashish.application.config;
 import java.net.InetSocketAddress;
 import java.util.Iterator;
 
-import io.github.jhipster.config.JHipsterProperties;
+import tech.jhipster.config.JHipsterProperties;
 
 import ch.qos.logback.classic.AsyncAppender;
 import ch.qos.logback.classic.Level;
@@ -49,7 +49,7 @@ public class LoggingConfiguration {
             addLogstashAppender(context);
             addContextListener(context);
         }
-        if (jHipsterProperties.getMetrics().getLogs().isEnabled()) {
+        if (jHipsterProperties.getLogging().getLogstash().isEnabled()) {
             setMetricsMarkerLogbackFilter(context);
         }
     }
@@ -87,7 +87,7 @@ public class LoggingConfiguration {
         AsyncAppender asyncLogstashAppender = new AsyncAppender();
         asyncLogstashAppender.setContext(context);
         asyncLogstashAppender.setName(ASYNC_LOGSTASH_APPENDER_NAME);
-        asyncLogstashAppender.setQueueSize(jHipsterProperties.getLogging().getLogstash().getQueueSize());
+        asyncLogstashAppender.setQueueSize(jHipsterProperties.getLogging().getLogstash().getRingBufferSize());
         asyncLogstashAppender.addAppender(logstashAppender);
         asyncLogstashAppender.start();
 

@@ -3,7 +3,7 @@ import com.ashish.application.config.Constants;
 
 import com.ashish.application.HomeApplicationApp;
 import com.ashish.application.domain.User;
-import io.github.jhipster.config.JHipsterProperties;
+import tech.jhipster.config.JHipsterProperties;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.mockito.ArgumentCaptor;

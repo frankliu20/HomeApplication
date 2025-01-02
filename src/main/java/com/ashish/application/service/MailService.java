@@ -2,8 +2,7 @@ package com.ashish.application.service;
 
 import com.ashish.application.domain.User;
 
-import io.github.jhipster.config.JHipsterProperties;
-
+import tech.jhipster.config.JHipsterProperties;
 import java.nio.charset.StandardCharsets;
 import java.util.Locale;
 import jakarta.mail.internet.MimeMessage;

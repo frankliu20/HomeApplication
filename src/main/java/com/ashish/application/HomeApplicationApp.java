@@ -3,7 +3,7 @@ package com.ashish.application;
 import com.ashish.application.config.ApplicationProperties;
 import com.ashish.application.config.DefaultProfileUtil;
 
-import io.github.jhipster.config.JHipsterConstants;
+import tech.jhipster.config.JHipsterConstants;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -70,7 +70,7 @@ public class HomeApplicationApp {
             log.warn("The host name could not be determined, using `localhost` as fallback");
         }
         log.info("""
-                
+
                 ----------------------------------------------------------
                 	\
                 Application '{}' is running! Access URLs:

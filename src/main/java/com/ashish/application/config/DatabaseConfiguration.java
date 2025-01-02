@@ -1,8 +1,6 @@
 package com.ashish.application.config;
 
-import io.github.jhipster.config.JHipsterConstants;
-import io.github.jhipster.config.h2.H2ConfigurationHelper;
-import io.github.jhipster.config.liquibase.AsyncSpringLiquibase;
+import tech.jhipster.config.JHipsterConstants;
 
 import liquibase.integration.spring.SpringLiquibase;
 import org.slf4j.Logger;
@@ -19,6 +17,8 @@ import org.springframework.core.task.TaskExecutor;
 import org.springframework.data.jpa.repository.config.EnableJpaAuditing;
 import org.springframework.data.jpa.repository.config.EnableJpaRepositories;
 import org.springframework.transaction.annotation.EnableTransactionManagement;
+import tech.jhipster.config.h2.H2ConfigurationHelper;
+import tech.jhipster.config.liquibase.AsyncSpringLiquibase;
 
 import javax.sql.DataSource;
 import java.sql.SQLException;

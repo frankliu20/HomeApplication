@@ -1,7 +1,7 @@
 package com.ashish.application.security.jwt;
 
 import com.ashish.application.security.AuthoritiesConstants;
-import io.github.jhipster.config.JHipsterProperties;
+import tech.jhipster.config.JHipsterProperties;
 import io.jsonwebtoken.Jwts;
 import io.jsonwebtoken.SignatureAlgorithm;
 import org.junit.jupiter.api.BeforeEach;

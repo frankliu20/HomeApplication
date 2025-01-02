@@ -1,6 +1,6 @@
 package com.ashish.application.config;
 
-import io.github.jhipster.config.JHipsterProperties;
+import tech.jhipster.config.JHipsterProperties;
 
 import com.codahale.metrics.JmxReporter;
 import com.codahale.metrics.JvmAttributeGaugeSet;
@@ -83,12 +83,12 @@ public class MetricsConfiguration extends MetricsConfigurerAdapter {
             hikariDataSource.setMetricsTrackerFactory(null);
             hikariDataSource.setMetricRegistry(metricRegistry);
         }
-        if (jHipsterProperties.getMetrics().getJmx().isEnabled()) {
+        if (jHipsterProperties.getLogging().getLogstash().isEnabled()) {
             log.debug("Initializing Metrics JMX reporting");
             JmxReporter jmxReporter = JmxReporter.forRegistry(metricRegistry).build();
             jmxReporter.start();
         }
-        if (jHipsterProperties.getMetrics().getLogs().isEnabled()) {
+        if (jHipsterProperties.getLogging().getLogstash().isEnabled()) {
             log.info("Initializing Metrics Log reporting");
             Marker metricsMarker = MarkerFactory.getMarker("metrics");
             final Slf4jReporter reporter = Slf4jReporter.forRegistry(metricRegistry)
@@ -97,7 +97,7 @@ public class MetricsConfiguration extends MetricsConfigurerAdapter {
                 .convertRatesTo(TimeUnit.SECONDS)
                 .convertDurationsTo(TimeUnit.MILLISECONDS)
                 .build();
-            reporter.start(jHipsterProperties.getMetrics().getLogs().getReportFrequency(), TimeUnit.SECONDS);
+            reporter.start(1, TimeUnit.SECONDS);
         }
     }
 }

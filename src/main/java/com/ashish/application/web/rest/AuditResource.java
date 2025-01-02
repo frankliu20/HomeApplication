@@ -3,7 +3,6 @@ package com.ashish.application.web.rest;
 import com.ashish.application.service.AuditEventService;
 import com.ashish.application.web.rest.util.PaginationUtil;
 
-import io.github.jhipster.web.util.ResponseUtil;
 import org.springframework.boot.actuate.audit.AuditEvent;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
@@ -11,6 +10,7 @@ import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
+import tech.jhipster.web.util.ResponseUtil;
 
 import java.time.LocalDate;
 import java.time.ZoneId;
